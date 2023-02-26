@@ -1,10 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  const pressHandler = ()=>{
+    navigation.navigate('newProduct')
+  }
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <TouchableOpacity onPress={pressHandler}>
+        <Text>New</Text>
+      </TouchableOpacity>
     </View>
   );
 };

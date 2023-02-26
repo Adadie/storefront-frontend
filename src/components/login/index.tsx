@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import InputWithLabel from '../common/textInput';
 import ButtonComponent from '../common/button';
@@ -16,7 +10,7 @@ const LoginComponent = () => {
 
   const navigation = useNavigation();
 
-  const pressHandler = () => {
+  const pressHandler: () => void = () => {
     try {
       navigation.navigate('Home');
     } catch (error) {}
@@ -50,7 +44,7 @@ const LoginComponent = () => {
         <Text>
           Don't have an account?
           {/* <TouchableOpacity > */}
-            <Text style={styles.forgotPassword}> Signup</Text>
+          <Text style={styles.forgotPassword}> Signup</Text>
           {/* </TouchableOpacity> */}
         </Text>
       </View>

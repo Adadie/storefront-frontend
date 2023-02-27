@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     borderWidth: 1,
     width: 260,
+    borderRadius: 8,
   },
   inputFocused: {
     height: 40,
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     borderWidth: 1,
     width: 260,
+    borderRadius: 8,
   },
 });
 

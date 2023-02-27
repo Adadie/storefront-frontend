@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Button,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -65,62 +66,70 @@ const NewProductComponent = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputsView}>
-        <InputWithLabel
-          label="Product Name"
-          value={product?.productName}
-          onChangeText={(e) => handleChange(e, 'productName')}
-        />
-        <InputWithLabel
-          label="Product Price"
-          keyboardType="numeric"
-          value={product?.productDescription}
-          onChangeText={(e) => handleChange(e, 'productPrice')}
-        />
-        <InputWithLabel
-          label="Short description"
-          multiline={true}
-          numberOfLines={4}
-          value={product?.productDescription}
-          onChangeText={(e) => handleChange(e, 'productPrice')}
-        />
-        <DropDownPicker
-          items={[
-            { value: 1, label: 'Shirt' },
-            { value: 2, label: 'Dress' },
-            { value: 3, label: 'Trouser' },
-          ]}
-          open={open}
-          setOpen={setOpen}
-          value={product?.productPrice}
-          setValue={setProduct}
-          listMode="MODAL"
-          modalAnimationType="fade"
-          theme="LIGHT"
-          multiple={false}
-        />
-        <>
-          <Button title="DatePicker" onPress={() => setOpenDatePicker(true)} />
-          {openDatePicker && (
-            <DatePicker
-              style={{ width: 200 }}
-              value={date}
-              mode="date"
-              dateFormat="shortdate"
-              onChange={() => setOpenDatePicker(false)}
-            />
-          )}
-        </>
-        <>
-          <Button title="Pick an image from camera roll" onPress={pickImage} />
-          {image && (
-            <Image
-              source={{ uri: image }}
-              style={{ width: 200, height: 200 }}
-            />
-          )}
-        </>
-      </View>
+      <ScrollView>
+        <View style={styles.inputsView}>
+          <InputWithLabel
+            label="Product Name"
+            value={product?.productName}
+            onChangeText={(e) => handleChange(e, 'productName')}
+          />
+          <InputWithLabel
+            label="Product Price"
+            keyboardType="numeric"
+            value={product?.productDescription}
+            onChangeText={(e) => handleChange(e, 'productPrice')}
+          />
+          <InputWithLabel
+            label="Short description"
+            multiline={true}
+            numberOfLines={4}
+            value={product?.productDescription}
+            onChangeText={(e) => handleChange(e, 'productPrice')}
+          />
+          <DropDownPicker
+            style={styles.select}
+            items={[
+              { value: 1, label: 'Shirt' },
+              { value: 2, label: 'Dress' },
+              { value: 3, label: 'Trouser' },
+            ]}
+            open={open}
+            setOpen={setOpen}
+            value={product?.productPrice}
+            setValue={setProduct}
+            listMode="MODAL"
+            modalAnimationType="fade"
+            theme="LIGHT"
+            multiple={false}
+          />
+          <>
+            <TouchableOpacity
+              onPress={() => setOpenDatePicker(true)}
+              style={styles.select}
+            >
+              <Text style={!date && styles.label}>
+                {date ? date.toDateString() : 'Pick Manufacturing Date'}
+              </Text>
+            </TouchableOpacity>
+            {openDatePicker && (
+              <DatePicker
+                style={{ width: 200 }}
+                value={date}
+                mode="date"
+                dateFormat="shortdate"
+                onChange={() => setOpenDatePicker(false)}
+              />
+            )}
+          </>
+          <>
+            <Text style={styles.label}>Add Image</Text>
+            <TouchableOpacity onPress={pickImage} style={styles.imageSelect}>
+              <Text style={styles.plus}>+</Text>
+            </TouchableOpacity>
+            {image && <Image source={{ uri: image }} style={styles.image} />}
+          </>
+        </View>
+      </ScrollView>
       <ButtonComponent title="Add Product" onPress={pressHandler} />
     </View>
   );
@@ -128,29 +137,50 @@ const NewProductComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'flex-start',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    // marginBottom: 20,
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 20,
   },
   inputsView: {
-    alignItems: 'flex-start',
     marginBottom: 10,
   },
-  forgotPasswordWrap: {
-    alignSelf: 'flex-end',
-    marginBottom: 20,
+  select: {
+    justifyContent: 'center',
+    height: 40,
+    fontSize: 16,
+    paddingLeft: 16,
+    borderWidth: 1,
+    width: 260,
+    marginVertical: 16,
+    borderRadius: 8,
   },
-  forgotPassword: {
-    textDecorationLine: 'underline',
+  label: {
+    fontSize: 16,
+    alignSelf: 'flex-start',
+    color: 'gray',
+  },
+  imageSelect: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    height: 80,
+    width: 120,
+    borderWidth: 1,
+    marginVertical: 16,
+    borderRadius: 8,
+    paddingBottom: 15,
+    paddingTop: 0,
+  },
+  plus: {
+    fontSize: 64,
+    fontWeight: '200',
   },
   image: {
     marginBottom: 30,
-  },
-  signupView: {
-    marginVertical: 20,
+    width: 200,
+    height: 200,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
   },
 });
 

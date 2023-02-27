@@ -60,7 +60,7 @@ const NewProductComponent = () => {
 
   const pressHandler: () => void = () => {
     try {
-      navigation.navigate('Home');
+      navigation.navigate('publishedProducts');
     } catch (error) {}
   };
 

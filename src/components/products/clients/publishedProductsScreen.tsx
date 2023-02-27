@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import ProductCard from '../productCard';
 
 const PublishedProducts = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>Products</Text> */}
@@ -22,9 +23,7 @@ const PublishedProducts = () => {
             name="Converse"
             description="Product description goes here."
             price="$24.99"
-            onPress={() => {
-              console.log('Pressedd card========');
-            }}
+            onPress={() => navigation.navigate('singleProduct')}
           />
           {new Array(10).fill(undefined).map((item, index) => (
             <ProductCard
@@ -35,9 +34,7 @@ const PublishedProducts = () => {
               name="Nike"
               description="Product description goes here."
               price="$19.99"
-              onPress={() => {
-                console.log('Pressedd card========');
-              }}
+              onPress={() => navigation.navigate('singleProduct')}
             />
           ))}
         </View>
@@ -71,6 +68,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginRight: 30,
     height: 200,
+    resizeMode: 'cover',
   },
 });
 

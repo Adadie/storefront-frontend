@@ -1,17 +1,46 @@
 import React, { useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import ProductCard from '../productCard';
 
 const PublishedProducts = () => {
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <Text>Client Products</Text>
+      {/* <Text style={styles.title}>Products</Text> */}
+      <ScrollView style={styles.scrollView}>
+        <View>
+          <Image
+            source={require('../../../../assets/banner.png')}
+            style={styles.image}
+          />
+        </View>
+        <View>
+          <ProductCard
+            image={
+              'https://images.unsplash.com/photo-1607522370275-f14206abe5d3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=821&q=80'
+            }
+            name="Converse"
+            description="Product description goes here."
+            price="$24.99"
+            onPress={() => {
+              console.log('Pressedd card========');
+            }}
+          />
+          {new Array(10).fill(undefined).map((item, index) => (
+            <ProductCard
+              key={index}
+              image={
+                'https://images.unsplash.com/photo-1552346154-21d32810aba3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
+              }
+              name="Nike"
+              description="Product description goes here."
+              price="$19.99"
+              onPress={() => {
+                console.log('Pressedd card========');
+              }}
+            />
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -23,46 +52,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingBottom: 20,
+    marginHorizontal: 5,
+  },
+  title: {
+    color: '#000000',
+    fontWeight: 'bold',
+    fontSize: 24,
+    marginVertical: 12,
+  },
+  scrollView: {
+    flex: 1,
+    marginHorizontal: 5,
   },
   inputsView: {
     marginBottom: 10,
   },
-  select: {
-    justifyContent: 'center',
-    height: 40,
-    fontSize: 16,
-    paddingLeft: 16,
-    borderWidth: 1,
-    width: 260,
-    marginVertical: 16,
-    borderRadius: 8,
-  },
-  label: {
-    fontSize: 16,
-    alignSelf: 'flex-start',
-    color: 'gray',
-  },
-  imageSelect: {
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    height: 80,
-    width: 120,
-    borderWidth: 1,
-    marginVertical: 16,
-    borderRadius: 8,
-    paddingBottom: 15,
-    paddingTop: 0,
-  },
-  plus: {
-    fontSize: 64,
-    fontWeight: '200',
-  },
   image: {
     marginBottom: 30,
-    width: 200,
+    marginRight: 30,
     height: 200,
-    borderWidth: 1,
-    alignSelf: 'flex-start',
   },
 });
 

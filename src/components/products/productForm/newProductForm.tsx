@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Image,
@@ -12,13 +12,16 @@ import { useNavigation } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DatePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
+import _ from 'lodash';
 
 import InputWithLabel from '../../common/textInput';
 import ButtonComponent from '../../common/button';
+import { getCategories } from '../../../helpers/categories';
+import { createProduct } from '../../../helpers/products';
 
 type productObject = {
   productName: string;
-  productPrice: number;
+  productPrice: string;
   productCategory: string;
   productDescription: string;
   productMfg: string;
@@ -27,12 +30,44 @@ type productObject = {
 
 const NewProductComponent = () => {
   const [product, setProduct] = useState<productObject | null>();
+  const [category, setCategory] = useState();
   const [open, setOpen] = useState<boolean>(false);
   const [date, setDate] = useState(new Date());
   const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
   const [image, setImage] = useState(null);
+  const [categoryOptions, setCategoryOptions] = useState<object>();
 
   const navigation = useNavigation();
+
+  const createOptions = async (data: object) => {
+    try {
+      let options = _.map(data, (item) => ({
+        id: item.id,
+        value: item.name,
+        label: item.name,
+      }));
+      return options;
+    } catch (error) {}
+  };
+
+  const getData = async () => {
+    try {
+      let categoriesRes = await getCategories();
+      if (!categoriesRes.has_error && categoriesRes.data.lenght > 0) {
+        let categories = await createOptions(categoriesRes.data);
+        setCategoryOptions(categories);
+      }
+      if (!categoriesRes.has_error) {
+        setCategoryOptions([]);
+      }
+    } catch (error) {
+      console.log('Error caught NewProductComponent - getData()', error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const pickImage = async () => {
     try {
@@ -48,20 +83,43 @@ const NewProductComponent = () => {
       if (!result.canceled) {
         setImage(result.assets[0].uri);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log('Error caught ProductForm - pickImage()', error);
+    }
   };
 
-  const handleChange: (a, b: string) => void = (e, name) => {
+  const handleChange: (a, b: string) => void = (value, name) => {
     try {
-      const { value } = e.target;
+      console.log('Changeeeeeeeeeeee value', value);
+      console.log('Changeeeeeeeeeeee name', name);
       setProduct({ ...product, [name]: value });
-    } catch (error) {}
+    } catch (error) {
+      console.log('Error caught ProductForm - handleChange()', error);
+    }
   };
 
-  const pressHandler: () => void = () => {
+  const pressHandler: () => void = async () => {
     try {
-      navigation.navigate('publishedProducts');
-    } catch (error) {}
+      console.log('Submitting product');
+
+      const { productName, productDescription, productPrice } = product;
+      let payload = {
+        name: productName,
+        description: productDescription,
+        price: productPrice,
+        image: '',
+        category: 'Clothing',
+        mfgDate: date,
+      };
+      payload.image = image;
+
+      let response = await createProduct(payload);
+      console.log('Rsponse after crreate----------', response);
+
+      // navigation.navigate('publishedProducts');
+    } catch (error) {
+      console.log('Error caught ProductForm - pressHandler()', error);
+    }
   };
 
   return (
@@ -76,7 +134,7 @@ const NewProductComponent = () => {
           <InputWithLabel
             label="Product Price"
             keyboardType="numeric"
-            value={product?.productDescription}
+            value={product?.productPrice}
             onChangeText={(e) => handleChange(e, 'productPrice')}
           />
           <InputWithLabel
@@ -84,24 +142,20 @@ const NewProductComponent = () => {
             multiline={true}
             numberOfLines={4}
             value={product?.productDescription}
-            onChangeText={(e) => handleChange(e, 'productPrice')}
+            onChangeText={(e) => handleChange(e, 'productDescription')}
           />
-          <DropDownPicker
+          {/* <DropDownPicker
             style={styles.select}
-            items={[
-              { value: 1, label: 'Shirt' },
-              { value: 2, label: 'Dress' },
-              { value: 3, label: 'Trouser' },
-            ]}
+            items={categoryOptions}
             open={open}
-            setOpen={setOpen}
-            value={product?.productPrice}
-            setValue={setProduct}
+            // setOpen={setOpen}
+            value={category}
+            // setValue={setCategory}
             listMode="MODAL"
             modalAnimationType="fade"
             theme="LIGHT"
             multiple={false}
-          />
+          /> */}
           <>
             <TouchableOpacity
               onPress={() => setOpenDatePicker(true)}
@@ -117,7 +171,7 @@ const NewProductComponent = () => {
                 value={date}
                 mode="date"
                 dateFormat="shortdate"
-                onChange={() => setOpenDatePicker(false)}
+                onChange={handleDateChange}
               />
             )}
           </>

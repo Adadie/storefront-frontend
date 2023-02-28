@@ -16,6 +16,12 @@ const LoginComponent = () => {
     } catch (error) {}
   };
 
+  const ClientLogin: () => void = () => {
+    try {
+      navigation.navigate('publishedProducts');
+    } catch (error) {}
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -39,7 +45,10 @@ const LoginComponent = () => {
       <TouchableOpacity style={styles.forgotPasswordWrap}>
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
-      <ButtonComponent title="Login" onPress={pressHandler} />
+      <ButtonComponent title="Login as Seller" onPress={pressHandler} />
+      <Text>or</Text>
+      
+      <ButtonComponent title="Login as Client" onPress={ClientLogin} />
       <View style={styles.signupView}>
         <Text>
           Don't have an account?

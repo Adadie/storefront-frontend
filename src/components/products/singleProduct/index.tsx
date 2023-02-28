@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ProductDetailsProps {
   image: string;
@@ -18,19 +19,44 @@ const ProductDetails = ({
   price,
   mfg,
   rating,
-  category
+  category,
 }: ProductDetailsProps) => {
+  const [product, setProduct] = useState();
+
+  const getData = async () => {
+    try {
+      let product = await AsyncStorage.getItem('selectedProduct');
+      if (product) {
+        let productObj = JSON.parse(product);
+        setProduct(productObj);
+      }
+    } catch (error) {
+      console.log('Error caught ProductDetails - getData()', error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  if (!product) {
+    return (
+      <View style={styles.container}>
+        <Text>Product not found</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View>
-      <Image source={{ uri: image }} style={styles.image} />
+        <Image source={{ uri: image }} style={styles.image} />
       </View>
       <View style={styles.detailsContainer}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.category}>{category}</Text>
-        <Text style={styles.description}>{description}</Text>
-        <Text style={styles.price}>${price}</Text>
-        <Text style={styles.rating}>Manufacturing Date: {mfg}</Text>
+        <Text style={styles.name}>{product.name}</Text>
+        <Text style={styles.category}>{product.category}</Text>
+        <Text style={styles.description}>{product.description}</Text>
+        <Text style={styles.price}>${product.price}</Text>
+        <Text style={styles.rating}>Manufacturing Date: {product.mfgDate}</Text>
         <Text style={styles.rating}>Rating: {rating}/5</Text>
       </View>
     </View>

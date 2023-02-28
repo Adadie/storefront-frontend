@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 export const getRemote = async (
   functionName: string,
   method: string,

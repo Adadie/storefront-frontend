@@ -97,7 +97,16 @@ const NewProductComponent = () => {
       console.log('Error caught ProductForm - handleChange()', error);
     }
   };
-
+  const handleDateChange: (a, b) => void = (e, date) => {
+    try {
+      console.log('Date change dateeeeeee', date);
+      setOpenDatePicker(false);
+      setDate(date);
+    } catch (error) {
+      console.log('Error caught ProductForm - handleChange()', error);
+    }
+  };
+  
   const pressHandler: () => void = async () => {
     try {
       console.log('Submitting product');
@@ -148,9 +157,10 @@ const NewProductComponent = () => {
             style={styles.select}
             items={categoryOptions}
             open={open}
-            // setOpen={setOpen}
+            // setOpen={handleOpen}
             value={category}
             // setValue={setCategory}
+            // onSelectItem={handleSelection}
             listMode="MODAL"
             modalAnimationType="fade"
             theme="LIGHT"

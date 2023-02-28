@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 interface ProductDetailsProps {
   image: string;
@@ -49,14 +50,19 @@ const ProductDetails = ({
   return (
     <View style={styles.container}>
       <View>
-        <Image source={{ uri: image }} style={styles.image} />
+        <Image
+          source={{ uri: product.image ? product.image : image }}
+          style={styles.image}
+        />
       </View>
       <View style={styles.detailsContainer}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.category}>{product.category}</Text>
         <Text style={styles.description}>{product.description}</Text>
         <Text style={styles.price}>${product.price}</Text>
-        <Text style={styles.rating}>Manufacturing Date: {product.mfgDate}</Text>
+        <Text style={styles.rating}>
+          Manufacturing Date: {moment(product.mfgDate).format('MMMM Do YYYY')}
+        </Text>
         <Text style={styles.rating}>Rating: {rating}/5</Text>
       </View>
     </View>

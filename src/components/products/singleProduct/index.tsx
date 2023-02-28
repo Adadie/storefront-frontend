@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Alert,
+  Share,
+  Button,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
@@ -39,6 +47,28 @@ const ProductDetails = ({
     getData();
   }, []);
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `Get this product at Creative app ${
+          product && product.image
+            ? product.image
+            : 'https://images.unsplash.com/photo-1552346154-21d32810aba3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
+        }`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          Alert.alert('Thank you for sharing');
+        } else {
+        }
+      } else if (result.action === Share.dismissedAction) {
+        Alert.alert('Sharing cancelled');
+      }
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+  };
+
   if (!product) {
     return (
       <View style={styles.container}>
@@ -64,6 +94,9 @@ const ProductDetails = ({
           Manufacturing Date: {moment(product.mfgDate).format('MMMM Do YYYY')}
         </Text>
         <Text style={styles.rating}>Rating: {rating}/5</Text>
+      </View>
+      <View style={{ marginTop: 50 }}>
+        <Button onPress={onShare} title="Share" />
       </View>
     </View>
   );

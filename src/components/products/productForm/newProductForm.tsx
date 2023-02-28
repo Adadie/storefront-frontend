@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,7 +9,6 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DatePicker from '@react-native-community/datetimepicker';
-import * as ImagePicker from 'expo-image-picker';
 import _ from 'lodash';
 
 import InputWithLabel from '../../common/textInput';
@@ -31,13 +28,12 @@ type productObject = {
 
 const NewProductComponent = () => {
   const [product, setProduct] = useState<productObject | null>();
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState<string>();
   const [open, setOpen] = useState<boolean>(false);
   const [date, setDate] = useState(new Date());
   const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const [categoryOptions, setCategoryOptions] = useState<object>();
+  const [categoryOptions, setCategoryOptions] = useState([]);
 
   const navigation = useNavigation();
 
@@ -55,11 +51,11 @@ const NewProductComponent = () => {
   const getData = async () => {
     try {
       let categoriesRes = await getCategories();
-      if (!categoriesRes.has_error && categoriesRes.data.lenght > 0) {
+      if (!categoriesRes.has_error && categoriesRes.data.length > 0) {
         let categories = await createOptions(categoriesRes.data);
         setCategoryOptions(categories);
       }
-      if (!categoriesRes.has_error) {
+      if (categoriesRes.has_error) {
         setCategoryOptions([]);
       }
     } catch (error) {
@@ -71,7 +67,7 @@ const NewProductComponent = () => {
     getData();
   }, []);
 
-  const handleChange: (a, b: string) => void = (value, name) => {
+  const handleChange: (a, bgetCategories: string) => void = (value, name) => {
     try {
       setProduct({ ...product, [name]: value });
     } catch (error) {
@@ -90,14 +86,13 @@ const NewProductComponent = () => {
   const pressHandler: () => void = async () => {
     try {
       console.log('Submitting product');
-
       const { productName, productDescription, productPrice } = product;
       let payload = {
         name: productName,
         description: productDescription,
         price: productPrice,
         image: imageUrl,
-        category: 'Clothing',
+        category: category,
         mfgDate: date,
       };
       let response = await createProduct(payload);
@@ -128,20 +123,20 @@ const NewProductComponent = () => {
             value={product?.productDescription}
             onChangeText={(e) => handleChange(e, 'productDescription')}
           />
-          {/* <DropDownPicker
+          <DropDownPicker
             style={styles.select}
             items={categoryOptions}
             open={open}
-            // setOpen={handleOpen}
+            setOpen={setOpen}
             value={category}
-            // setValue={setCategory}
-            // onSelectItem={handleSelection}
+            setValue={setCategory}
             listMode="MODAL"
             modalAnimationType="fade"
             theme="LIGHT"
             multiple={false}
-          /> */}
+          />
           <>
+            <Text style={styles.label}>Manufacturing Date</Text>
             <TouchableOpacity
               onPress={() => setOpenDatePicker(true)}
               style={styles.select}
@@ -160,7 +155,7 @@ const NewProductComponent = () => {
               />
             )}
           </>
-          <ImageUploader setImageUrl={setImageUrl}/>
+          <ImageUploader setImageUrl={setImageUrl} />
         </View>
       </ScrollView>
       <ButtonComponent title="Add Product" onPress={pressHandler} />
@@ -192,6 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     alignSelf: 'flex-start',
     color: 'gray',
+    marginTop: 18,
   },
   imageSelect: {
     alignItems: 'center',

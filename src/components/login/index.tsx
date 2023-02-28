@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import InputWithLabel from '../common/textInput';
 import ButtonComponent from '../common/button';
+import { login } from '../../helpers/auth';
 
 const LoginComponent = () => {
   const [password, setPassword] = useState('');
@@ -10,15 +18,24 @@ const LoginComponent = () => {
 
   const navigation = useNavigation();
 
-  const pressHandler: () => void = () => {
+  const pressHandler: () => void = async () => {
     try {
-      navigation.navigate('Home');
-    } catch (error) {}
-  };
-
-  const ClientLogin: () => void = () => {
-    try {
-      navigation.navigate('publishedProducts');
+      let payload = {
+        email: email,
+        password: password,
+      };
+      let response = await login(payload);
+      if (!response.has_error && response.data) {
+        if (response.data.user.role == 'Buyer') {
+          navigation.navigate('publishedProducts');
+        }
+        if (response.data.user.role == 'Seller') {
+          navigation.navigate('Home');
+        }
+      }
+      if (response.has_error) {
+        Alert.alert('Invalid credentials!');
+      }
     } catch (error) {}
   };
 
@@ -45,10 +62,10 @@ const LoginComponent = () => {
       <TouchableOpacity style={styles.forgotPasswordWrap}>
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
-      <ButtonComponent title="Login as Seller" onPress={pressHandler} />
-      <Text>or</Text>
-      
-      <ButtonComponent title="Login as Client" onPress={ClientLogin} />
+      <ButtonComponent title="Login" onPress={pressHandler} />
+      {/* <Text>or</Text> */}
+
+      {/* <ButtonComponent title="Login as Client" onPress={ClientLogin} /> */}
       <View style={styles.signupView}>
         <Text>
           Don't have an account?

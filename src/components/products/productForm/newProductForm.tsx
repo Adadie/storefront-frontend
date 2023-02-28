@@ -18,6 +18,7 @@ import InputWithLabel from '../../common/textInput';
 import ButtonComponent from '../../common/button';
 import { getCategories } from '../../../helpers/categories';
 import { createProduct } from '../../../helpers/products';
+import ImageUploader from '../../common/imageUploader';
 
 type productObject = {
   productName: string;
@@ -35,6 +36,7 @@ const NewProductComponent = () => {
   const [date, setDate] = useState(new Date());
   const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
   const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [categoryOptions, setCategoryOptions] = useState<object>();
 
   const navigation = useNavigation();
@@ -69,29 +71,8 @@ const NewProductComponent = () => {
     getData();
   }, []);
 
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      console.log(result);
-
-      if (!result.canceled) {
-        setImage(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log('Error caught ProductForm - pickImage()', error);
-    }
-  };
-
   const handleChange: (a, b: string) => void = (value, name) => {
     try {
-      console.log('Changeeeeeeeeeeee value', value);
-      console.log('Changeeeeeeeeeeee name', name);
       setProduct({ ...product, [name]: value });
     } catch (error) {
       console.log('Error caught ProductForm - handleChange()', error);
@@ -99,14 +80,13 @@ const NewProductComponent = () => {
   };
   const handleDateChange: (a, b) => void = (e, date) => {
     try {
-      console.log('Date change dateeeeeee', date);
       setOpenDatePicker(false);
       setDate(date);
     } catch (error) {
       console.log('Error caught ProductForm - handleChange()', error);
     }
   };
-  
+
   const pressHandler: () => void = async () => {
     try {
       console.log('Submitting product');
@@ -116,16 +96,11 @@ const NewProductComponent = () => {
         name: productName,
         description: productDescription,
         price: productPrice,
-        image: '',
+        image: imageUrl,
         category: 'Clothing',
         mfgDate: date,
       };
-      payload.image = image;
-
       let response = await createProduct(payload);
-      console.log('Rsponse after crreate----------', response);
-
-      // navigation.navigate('publishedProducts');
     } catch (error) {
       console.log('Error caught ProductForm - pressHandler()', error);
     }
@@ -185,13 +160,7 @@ const NewProductComponent = () => {
               />
             )}
           </>
-          <>
-            <Text style={styles.label}>Add Image</Text>
-            <TouchableOpacity onPress={pickImage} style={styles.imageSelect}>
-              <Text style={styles.plus}>+</Text>
-            </TouchableOpacity>
-            {image && <Image source={{ uri: image }} style={styles.image} />}
-          </>
+          <ImageUploader setImageUrl={setImageUrl}/>
         </View>
       </ScrollView>
       <ButtonComponent title="Add Product" onPress={pressHandler} />

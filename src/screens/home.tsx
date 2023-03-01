@@ -4,13 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const pressHandler = ()=>{
-    navigation.navigate('newProduct')
-  }
+  const pressHandler = () => {
+    navigation.navigate('newProduct');
+  };
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={pressHandler}>
-        <Text>New</Text>
+      <TouchableOpacity onPress={pressHandler} style={styles.button}>
+        <Text style={styles.text}>Add New Product</Text>
       </TouchableOpacity>
     </View>
   );
@@ -23,6 +23,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  button: {
+    borderRadius: 8,
+    padding: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#1C756C',
+    width: 180,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  text:{
+    color:'#ffffff',
+    fontWeight:'bold'
+  }
 });
 
 export default HomeScreen;

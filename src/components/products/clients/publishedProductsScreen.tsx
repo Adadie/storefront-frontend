@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import _ from 'lodash';
 
 import ProductCard from '../productCard';
 import { getProducts } from '../../../helpers/products';
@@ -15,7 +16,7 @@ const PublishedProducts = () => {
       let productsRes = await getProducts();
       console.log('Products----->', productsRes.data);
       if (!productsRes.has_error && productsRes.data.length > 0) {
-        setProducts(productsRes.data);
+        setProducts(_.orderBy(productsRes.data , 'createdAt', 'desc').slice(0, 10));
       }
       if (productsRes.has_error) {
         setProducts([]);
@@ -24,6 +25,7 @@ const PublishedProducts = () => {
       console.log('Error caught NewProductComponent - getData()', error);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -96,6 +97,7 @@ const NewProductComponent = () => {
         mfgDate: date,
       };
       let response = await createProduct(payload);
+      Alert.alert('Hooray!', 'Product Created successfully');
     } catch (error) {
       console.log('Error caught ProductForm - pressHandler()', error);
     }
@@ -134,6 +136,7 @@ const NewProductComponent = () => {
             modalAnimationType="fade"
             theme="LIGHT"
             multiple={false}
+            placeholder='Select a category'
           />
           <>
             <Text style={styles.label}>Manufacturing Date</Text>
